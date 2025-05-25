@@ -24,10 +24,13 @@ with col2:
 if st.button("Get Weather", type="primary"):
     if city:
         try:
+            # Determine units parameter based on selection
+            api_units = "metric" if unit == "°C" else "imperial"
+            
             params = {
                 "q": city,
                 "appid": API_KEY,
-                "units": "metric" if unit == "°C" else "imperial"
+                "units": api_units
             }
             response = requests.get(BASE_URL, params=params)
             response.raise_for_status()  # Raises exception for 4XX/5XX errors
@@ -55,11 +58,14 @@ if st.button("Get Weather", type="primary"):
             with col1:
                 st.image(f"http://openweathermap.org/img/wn/{icon_code}@2x.png", width=100)
             with col2:
-                st.metric(label="Temperature", value=f"{temperature:.1f} {unit}")
+                st.metric(label="Temperature", value=f"{temperature:.1f}{unit}")
             
             st.write(f"**Condition:** {condition}")
             st.write(f"**Humidity:** {humidity}%")
-            st.write(f"**Wind Speed:** {wind_speed} {'km/h' if unit == '°C' else 'mph'}")
+            
+            # Display wind speed with appropriate units
+            wind_unit = "km/h" if unit == "°C" else "mph"
+            st.write(f"**Wind Speed:** {wind_speed} {wind_unit}")
             
         except requests.exceptions.HTTPError as e:
             if response.status_code == 404:
