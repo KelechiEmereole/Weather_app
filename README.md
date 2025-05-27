@@ -12,15 +12,27 @@ A Streamlit web application that fetches and displays current weather data for a
 -  Local time display for searched location
 -  Mobile-responsive design
 
-## How It Works
 
+##  How It Works
 1. Enter a city name in the search field
-2. Click "Get Weather" to fetch current weather data
-3. View detailed weather information including:
+2. Choose preferred temperature unit (°C or °F)
+3. Click **"Get Weather"** to fetch current weather data
+4. View detailed weather information including:
    - Current temperature
    - Weather condition
    - Humidity percentage
    - Wind speed
+   - Local time
+   - Smart weather tip based on temperature
+
+##  Smart Weather Notifications
+Based on the current temperature:
+- If it's **≥ 30°C**, you'll see:  
+  ` It’s quite hot in [City] today!`
+- If it's **≤ 18°C**, you'll see:  
+  ` It’s chilly in [City], dress warm!`
+- Otherwise, it will display:  
+  ` The weather in [City] seems pleasant.`
    
 
 ## Installation
