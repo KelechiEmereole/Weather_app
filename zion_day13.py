@@ -24,13 +24,10 @@ with col2:
 if st.button("Get Weather", type="primary"):
     if city:
         try:
-            # Determine units parameter based on selection
-            api_units = "metric" if unit == "°C" else "imperial"
-            
             params = {
                 "q": city,
                 "appid": API_KEY,
-                "units": api_units
+                "units": "metric" if unit == "°C" else "imperial"
             }
             response = requests.get(BASE_URL, params=params)
             response.raise_for_status()  # Raises exception for 4XX/5XX errors
@@ -39,7 +36,7 @@ if st.button("Get Weather", type="primary"):
             
             # Extract weather data
             temperature = data['main']['temp']
-            condition = data['weather'][0]['description'].title()
+            weather_condition = data['weather'][0]['description'].title()
             humidity = data['main']['humidity']
             wind_speed = data['wind']['speed']
             country = data['sys']['country']
@@ -58,14 +55,11 @@ if st.button("Get Weather", type="primary"):
             with col1:
                 st.image(f"http://openweathermap.org/img/wn/{icon_code}@2x.png", width=100)
             with col2:
-                st.metric(label="Temperature", value=f"{temperature:.1f}{unit}")
+                st.metric(label="Temperature", value=f"{temperature:.1f} {unit}")
             
-            st.write(f"**Condition:** {condition}")
+            st.write(f"**Weather Condition:** {weather_condition}")
             st.write(f"**Humidity:** {humidity}%")
-            
-            # Display wind speed with appropriate units
-            wind_unit = "km/h" if unit == "°C" else "mph"
-            st.write(f"**Wind Speed:** {wind_speed} {wind_unit}")
+            st.write(f"**Wind Speed:** {wind_speed} {'km/h' if unit == '°C' else 'mph'}")
             
         except requests.exceptions.HTTPError as e:
             if response.status_code == 404:
@@ -76,3 +70,11 @@ if st.button("Get Weather", type="primary"):
             st.error(f"An error occurred: {str(e)}")
     else:
         st.warning("Please enter a city name")
+
+            # Smart Weather Notification
+    if temperature >= 30:
+        st.warning(f"It’s quite hot in {city.title()} today!")
+    elif temperature <= 18:
+        st.info(f"It’s chilly in {city.title()}, dress warm!")
+    else:
+        st.success(f"The weather in {city.title()} seems pleasant.")
